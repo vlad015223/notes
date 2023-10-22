@@ -1,0 +1,78 @@
+{% extends "mainpage/base.html" %}
+
+{% block content %}
+<h1>Заметки в категории "{{ category_title }}"</h1>
+<ul class="list-articles">
+    {% for entry in category_entries %}
+        <li>
+            <h2><p class="editableText" data-id="{{ entry.id }}" data-field="title">{{ entry.title }}</p></h2>
+            <div class="editableText" data-id="{{ entry.id }}" data-field="description" contenteditable="true">{{ entry.description|linebreaks }}</div>
+            <div class="clear"></div>
+        </li>
+    {% empty %}
+        <li>В этой категории нет заметок.</li>
+    {% endfor %}
+</ul>
+
+<script>
+    const editableTextElements = document.querySelectorAll(".editableText");
+
+    editableTextElements.forEach(element => {
+        element.addEventListener('click', function () {
+            this.contentEditable = true;
+            this.classList.add('editing');
+            this.focus();
+        });
+    
+        element.addEventListener('blur', function () {
+            this.contentEditable = false;
+            this.classList.remove('editing');
+    
+            // Получаем новое значение текста
+            const newContent = this.innerText;
+    
+            // Идентификатор записи и поле для обновления из атрибутов
+            const noteId = this.getAttribute('data-id');
+            const field = this.getAttribute('data-field');
+    
+            // Отправляем POST-запрос на сервер для обновления записи
+            const data = { note_id: noteId, field, new_content: newContent };
+            updateRecord(data);
+        });
+    });
+
+    function updateRecord(data) {
+        fetch(`/edit_note/${data.note_id}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.message);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+    
+    // Функция для получения CSRF-токена (оставьте ее без изменений)
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === name + '=') {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+{% endblock %}
