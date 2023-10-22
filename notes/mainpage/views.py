@@ -3,7 +3,8 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest,\
 from django.shortcuts import redirect, render, get_object_or_404
 from django.http import JsonResponse
 
-from .forms import CategoryEditForm
+
+from .forms import *
 from .models import *
 from .utils import generate_slug
 
@@ -12,8 +13,8 @@ import json
 all_categories = Category.objects.all()
 
 def mainpage(request):
-    category = Category.objects.all()
-    return render(request, 'mainpage/main.html', {'title': 'Главная страница', 'category': category, 'categories': all_categories})
+    categories = Category.objects.all()
+    return render(request, 'mainpage/main.html', {'title': 'Главная страница', 'categories': categories})
 
 def about(request):
     return render(request, 'mainpage/about.html', {'title': 'О сайте', 'categories': all_categories})
@@ -63,6 +64,31 @@ def edit_note(request, note_id):
         return JsonResponse({'message': 'Запись успешно обновлена.'})
     else:
         return JsonResponse({'message': 'Метод не разрешен.'}, status=405)
+
+def create_category(request):
+    if request.method == 'POST':
+        new_category = Category.objects.create(
+            title="Новая категория",
+            description="Описание категории"
+        )
+        data = {
+            'success': True,
+            'category_id': new_category.id,
+            'category_title': new_category.title,
+            'category_description': new_category.description,
+        }
+        return JsonResponse(data)
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+def create_note(request):
+    if request.method == 'POST':
+        form = NoteCreateForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('http://127.0.0.1:8000/')  # Перенаправьте пользователя на главную страницу или куда угодно
+    else:
+        form = NoteCreateForm()
+    return render(request, 'mainpage/create_note.html', {'form': form})
 
 def pageNotFound(request, exception):
     return HttpResponseNotFound('<h1>404</h1><p><h2>Страница не найдена</h2></p>')

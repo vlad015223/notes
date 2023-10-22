@@ -82,6 +82,18 @@ ul.mainmenu li a:hover {
 	color: #fcc87a;
 }
 
+.mainmenu-button {
+    background-color: #101010;
+    color: #fff;
+    padding: 10px 20px; /* Задайте отступы, чтобы кнопка выглядела симметрично */
+    border: none; /* Уберите границу, если не нужна */
+    cursor: pointer;
+}
+
+.mainmenu-button:hover {
+    background-color: #101010;
+}
+
 /* боковая панель */
 .left-chapters {
     color: #ccc;
@@ -180,4 +192,8 @@ ul.mainmenu li a:hover {
 #editableText.editing {
     border: 1px solid #000;
     padding: 5px;
+}
+
+.white-text {
+    color: #fff;
 }

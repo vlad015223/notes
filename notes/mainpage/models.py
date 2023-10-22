@@ -1,8 +1,10 @@
 from django.db import models
 
 class Category(models.Model):
-    title = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
 
 
 class Notes(models.Model):

@@ -4,7 +4,7 @@
 
 {% block content %}
 <ul class="list-articles">
-    {% for c in category %}
+    {% for c in categories %}
         <li>
             <!-- Структура для редактирования текста -->
             <h2><p class="editableText" data-id="{{ c.id }}" data-field="title">{{ c.title }}</p></h2>
@@ -12,7 +12,7 @@
             <div class="clear"></div>
 
             <p class="link-read-category">
-                <a href="{% url 'category' category_title=c.title %}">Перейти к заметкам</a>
+                <a data-category-title="{{ c.title }}">Перейти к заметкам</a>
             </p>
         </li>
     {% endfor %}

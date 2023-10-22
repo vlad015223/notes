@@ -25,17 +25,17 @@
 		<div class="clear"></div>
 	</div>
 {% endblock mainmenu %}
-
-
 <table class="table-content" border=0 cellpadding="0" cellspacing="0">
 <tr>
+
 <!-- Sidebar слева -->
 <td valign="top" class="left-chapters">
     <ul id="leftchapters">
         <li class="selected"><a href="http://127.0.0.1:8000"><p style="color: #fff;">Все заметки</li>
-        {% for all_categories in categories %}
-            <li><a href="{% url 'category' category_title=all_categories.title %}">{{ all_categories.title }}</a></li>
+        {% for category in categories %}
+            <li><a href="{% url 'category' category_title=category.title %}">{{ category.title }}</a></li>
         {% endfor %}
+		<br><li id="create-category-link" class="selected"><a href="#" class="white-text">Создать категорию</a></li></br>
     </ul>
 </td>
 
